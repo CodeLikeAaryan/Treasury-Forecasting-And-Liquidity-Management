@@ -78,24 +78,22 @@ By employing these methodologies, we aim to create a robust framework for predic
       - Validating the model using historical data to ensure accuracy and reliability in predictions.
 
 - **Results:**
-![Landing Page](images/img10.png)
-![Landing Page](images/img11.png)
-
   The forecasting model achieved an impressive R² score of **82%**, indicating a strong correlation between the predicted cash flow values and the actual values observed. This high level of accuracy is essential for effective financial planning. The generated reports provided valuable insights, including:
   - **Predicted Cash Flows for Each Time Period:** Detailed forecasts for 1 month, 3 months, 6 months, and 1 year, enabling strategic decision-making regarding investments and expenditures.
   - **Metrics Detailing Expected Inflows and Outflows:** Comprehensive breakdowns of anticipated revenues and costs, aiding in the assessment of potential liquidity positions.
   - **Identification of Days with Surplus and Deficit:** Highlighting specific dates where cash flow is expected to exceed or fall short of needs. This information is crucial for timely financial planning, allowing the organization to make informed decisions regarding cash reserves, borrowing needs, and investment opportunities.
 
 Overall, the implementation of this time series forecasting model significantly enhances the organization's ability to manage its cash flow effectively, ensuring financial stability and supporting long-term growth strategies.
-
+![Landing Page](images/img10.png)
+![Landing Page](images/img11.png)
 ### 3. Anomaly Detection in Accounts Payable
 ![Landing Page](images/img12.png)
 - **Objective:**  
   The primary objective of this analysis is to identify and analyze unusual patterns in accounts payable transactions. By detecting anomalies, the organization can mitigate risks associated with late payments and operational inefficiencies, ultimately leading to improved financial management and vendor relationships.
 
 - **Methodology:**
-  - **Data Analysis:**
 ![Landing Page](images/img13.png)
+  - **Data Analysis:**
     We began by analyzing a comprehensive dataset consisting of **40,000 transactions** related to accounts payable. The analysis involved several key steps:
     - **Exploratory Data Analysis (EDA):** Conducted initial assessments to understand the distribution of payment amounts, frequencies, and timelines. This step helped identify normal operating patterns within the data.
     - **Feature Engineering:** Developed relevant features from the dataset, including:
