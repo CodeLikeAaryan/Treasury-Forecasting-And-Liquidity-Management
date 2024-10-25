@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <title>Payment Date Prediction</title>
+</head>
+
+<style>
+    /* Existing table and button styles */
+    .table-container {
+    max-height: 200px; /* Adjust height as needed */
+    overflow-y: auto;  /* Enable vertical scrolling */
+}
+.card-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 20px;
+        margin-top: 30px;
+    }
+
+    .card {
+        flex: 1 1 calc(33.333% - 20px); /* 3 cards per row with a 20px gap */
+        background-color: #fff;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        font-family: Arial, sans-serif;
+    }
+
+    .card h4 {
+        font-size: 18px;
+        margin-bottom: 15px;
+        color: #333;
+    }
+
+    .card p {
+        font-size: 24px;
+        font-weight: bold;
+        color: #555;
+        margin: 0;
+    }
+
+    .card span {
+        font-size: 14px;
+        color: #999;
+    }
+    @media (max-width: 768px) {
+        .card {
+            flex: 1 1 100%; /* 1 card per row on smaller screens */
+        }
+    }
+    
+    table {
+        border-collapse: collapse;
+        border-spacing: 0;
+        width: 100%;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        height: 200px;
+    }
+
+    thead th {
+        color: white;
+        background: rgb(41, 40, 40);
+    }
+
+    tbody th {
+        background: none;
+        color: inherit;
+    }
+
+    th, td {
+        text-align: left;
+        padding: 8px;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    .custom-file-upload {
+        display: inline-block;
+        padding: 20px 40px;
+        cursor: pointer;
+        color: #fff;
+        background: linear-gradient(135deg, #6b73ff 0%, #cc0d66 100%);
+        border-radius: 10px;
+        border: none;
+        font-size: 20px;
+        font-weight: bold;
+        text-align: center;
+        transition: all 0.4s ease;
+        box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .custom-file-upload input[type="file"] {
+        display: none;
+    }
+
+    .upload-container {
+        border: 2px dashed #f8057e;
+        padding: 40px;
+        border-radius: 15px;
+        background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%);
+        text-align: center;
+        width: 100%;
+        margin-top: 30px;
+        transition: all 0.4s ease;
+    }
+    .upload-container:hover {
+        background: linear-gradient(135deg, #e0e0e0 0%, #ffffff 100%);
+        border-color: #6b73ff;
+        box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .upload-container:hover .custom-file-upload {
+        background: linear-gradient(135deg, #df0e81 0%, #6b73ff 100%);
+        box-shadow: 0px 15px 20px rgba(0, 0, 0, 0.2);
+        transform: translateY(-3px);
+    }
+
+    .upload-container i {
+        font-size: 30px;
+        color: #6b73ff;
+        margin-bottom: 15px;
+        transition: color 0.4s ease;
+    }
+
+    .upload-container:hover i {
+        color: #ee07a9;
+    }
+
+    button {
+        display: inline-block;
+        padding: 20px 40px;
+        cursor: pointer;
+        color: #fff;
+        background-color: #4a90e2;
+        border-radius: 8px;
+        border: none;
+        font-size: 20px;
+        font-weight: 600;
+        text-align: center;
+        transition: all 0.3s ease;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        margin: 15px 0;
+    }
+
+    button:hover {
+        background-color: #357ab8;
+        box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2);
+        transform: translateY(-2px);
+    }
+
+    button:active {
+        background-color: #2c6aa4;
+        transform: translateY(0);
+        box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    .dropdown-container {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        margin: 20px 0;
+    }
+
+    .styled-dropdown {
+        width: 50%;
+        padding: 15px;
+        font-size: 18px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+        color: #333;
+        transition: all 0.3s ease;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .card-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 20px;
+        margin-top: 30px;
+    }
+
+    .card {
+        flex: 1 1 calc(33.333% - 20px); /* 3 cards per row with a 20px gap */
+        background-color: #fff;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        font-family: Arial, sans-serif;
+    }
+
+    .card h4 {
+        font-size: 18px;
+        margin-bottom: 15px;
+        color: #333;
+    }
+
+    .card p {
+        font-size: 24px;
+        font-weight: bold;
+        color: #555;
+        margin: 0;
+    }
+
+    .card span {
+        font-size: 14px;
+        color: #999;
+    }
+
+    .card:nth-child(odd) {
+        background: #f7f9fc;
+    }
+    .styled-dropdown:focus {
+        outline: none;
+        border-color: #6b73ff;
+        box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .styled-dropdown:hover {
+        background-color: #e0e0e0;
+    }
+
+    .styled-dropdown option {
+        padding: 10px;
+        background-color: #fff;
+        color: #333;
+    }
+
+</style>
+<body></body>
+    <nav>
+        <div class="nav__header">
+            <div class="nav__logo">
+                <a href="#" style="font-size: 30px;">DATA<span>NEX</span>.</a>
+            </div>
+            <div class="nav__menu__btn" id="menu-btn">
+                <span><i class="ri-menu-line"></i></span>
+            </div>
+        </div>
+        <ul class="nav__links" id="nav-links">
+            <li><a href="#">Home</a></li>
+            <li><a href="#about-team">About Team</a></li>
+            <li><a href="#products">Products</a></li>
+            <li><a href="#insights">Insights</a></li>
+        </ul>
+    </nav>
+
+    <section class="prediction" id="payment-date-prediction" style="padding: 80px; display: block; height: 100%;">
+        <h2>Payment Receipt Date Prediction</h2>
+
+        <div class="upload-container">
+            <label class="custom-file-upload">
+                <input type="file" id="csvFileInput" accept=".csv" />
+                <i class="ri-upload-cloud-2-line" style="margin-right: 8px;"></i> Choose File
+            </label>
+            <p id="uploadStatus"></p>
+        </div>
+
+        <button onclick="uploadAndNotify()">Upload CSV</button>
+        <button id="viewDataButton" style="display:none;" onclick="viewDataset()">View Dataset</button>
+        <div id="csvPreview" style="max-height: 500px;margin-top: 20px; clear: both; display: block; width: 100%; overflow-y: auto;"></div>
+
+        <button id="predictButton" style="display:none;" onclick="predictDates()">Predict</button>
+
+        <!-- Prediction result display -->
+        <div id="predictionResult" style="max-height: 500px; overflow-y: scroll;"></div>
+
+        <!-- Customer Persona Report Analysis heading -->
+        <h2 id="customerPersonaHeading" style="display:none; margin-top: 40px;text-align: left;font-size: 30px;">Customer Persona Report Analysis</h2>
+
+        <!-- Dropdown for selecting customer names -->
+        <div class="dropdown-container">
+            <select id="customerDropdown" class="styled-dropdown" style="display:none;">
+                <option value="">Select a Customer</option>
+            </select>
+        </div>
+
+        <button id="showInsightsButton" style="display:none;" onclick="showInsights()">Show Customer Insights</button>
+
+        <!-- Insights display container -->
+        <div id="insightsContainer" style="max-height: 300px;"></div>
+
+        <!-- Gauge display container -->
+        <div id="gauge-container" style="margin-top: 40rem; max-height: 100%; width:100%;"></div>
+
+        <!-- Classification reasoning display container -->
+        <div id="classification-container" style="margin-top: 2rem; max-width: 100%; width:100%;"></div>
+
+        <!-- Trend and Amount charts container - Put the two charts side by side -->
+        <div class="chart-row" style="display: flex; justify-content: space-between;">
+            <div id="trend-container" style="width: 48%;"></div> <!-- Predicted Days in Arrears Chart -->
+            <div id="amount-container" style="width: 48%;"></div> <!-- Standard Amount in USD Chart -->
+        </div>
+    </section>
+
+    <!-- Include Plotly.js library -->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+    <!-- Your main JavaScript file -->
+    <script src="{{ url_for('static', filename='main.js') }}"></script>
+
+    <script>
+        function uploadAndNotify() {
+            const fileInput = document.getElementById('csvFileInput');
+            if (fileInput.files.length === 0) {
+                alert("Please select a file to upload.");
+                return;
+            }
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+
+            fetch('/upload', {
+                method: 'POST',
+                body: formData
+            }).then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('uploadStatus').textContent = 'Your CSV has been uploaded.';
+                        document.getElementById('viewDataButton').style.display = 'block';
+                    } else {
+                        document.getElementById('uploadStatus').textContent = 'Failed to upload file.';
+                    }
+                }).catch(error => {
+                    document.getElementById('uploadStatus').textContent = 'Error uploading file.';
+                    console.error('Error:', error);
+                });
+        }
+
+        function viewDataset() {
+            fetch('/view-data', {
+                method: 'POST'
+            }).then(response => response.text())
+                .then(html => {
+                    document.getElementById('csvPreview').innerHTML = html;
+                    document.getElementById('predictButton').style.display = 'block';
+                }).catch(error => {
+                    document.getElementById('csvPreview').textContent = 'Error displaying data.';
+                    console.error('Error:', error);
+                });
+        }
+
+        function predictDates() {
+            fetch('/predict', {
+                method: 'POST'
+            }).then(response => response.json())
+                .then(data => {
+                    document.getElementById('predictionResult').innerHTML = data.table;
+                    
+                    // Display the heading "Customer Persona Report Analysis"
+                    document.getElementById('customerPersonaHeading').style.display = 'block';
+
+                    // Populate and display the customer dropdown
+                    const customerDropdown = document.getElementById('customerDropdown');
+                    customerDropdown.innerHTML = '<option value="">Select a Customer</option>';
+                    data.customers.forEach(customer => {
+                        const option = document.createElement('option');
+                        option.value = customer;
+                        option.text = customer;
+                        customerDropdown.appendChild(option);
+                    });
+                    customerDropdown.style.display = 'block';
+
+                    document.getElementById('showInsightsButton').style.display = 'block';
+                }).catch(error => {
+                    document.getElementById('predictionResult').textContent = 'Error performing prediction.';
+                    console.error('Error:', error);
+                });
+        }
+
+        function showInsights() {
+            const selectedCustomer = document.getElementById('customerDropdown').value;
+            if (!selectedCustomer) {
+                alert('Please select a customer from the dropdown.');
+                return;
+            }
+
+            fetch(`/insights?customer=${encodeURIComponent(selectedCustomer)}`, {
+                method: 'GET'
+            }).then(response => response.json())
+                .then(data => {
+                    // Inject insights into the insights container
+                    document.getElementById('insightsContainer').innerHTML = data.insights_html;
+
+                    // Render the gauge chart
+                    document.getElementById('gauge-container').innerHTML = ''; // Clear the container
+                    Plotly.newPlot('gauge-container', JSON.parse(data.gauge_data));
+
+                    // Inject classification reasoning into the classification container
+                    document.getElementById('classification-container').innerHTML = data.classification_html;
+
+                    // Render the trend chart (Predicted Days in Arrears)
+                    document.getElementById('trend-container').innerHTML = ''; // Clear the container
+                    Plotly.newPlot('trend-container', JSON.parse(data.trend_data));
+
+                    // Render the Standard Amount in USD chart
+                    document.getElementById('amount-container').innerHTML = ''; // Clear the container
+                    Plotly.newPlot('amount-container', JSON.parse(data.amount_data));
+                }).catch(error => {
+                    document.getElementById('insightsContainer').textContent = 'Error generating insights.';
+                    console.error('Error:', error);
+                });
+        }
+    </script>
+</body>
+
+
+
+</html>

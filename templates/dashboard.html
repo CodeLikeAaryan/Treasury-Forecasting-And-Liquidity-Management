@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Supplier Dashboard</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+
+
+    <style>
+        /* Basic Styling */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f7f8fa;
+            color: #333333;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Container for the content */
+        .container {
+            margin-top: 20px;
+            padding: 20px;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Header Styling */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 32px;
+            font-weight: bold;
+            color: #2c3e50;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        /* Dropdown Styling */
+        .form-select {
+            width: 300px;
+            margin: 0 auto 20px auto;
+            display: block;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+            background-color: #fff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .form-select:focus {
+            border-color: #2980b9;
+            box-shadow: 0 0 8px rgba(41, 128, 185, 0.5);
+            outline: none;
+        }
+
+        /* Card Container */
+        .card-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+
+        /* Individual Card Styling */
+        .card {
+            flex: 0 1 calc(25% - 20px);
+            margin: 10px;
+            padding: 20px;
+            background: #ffffff;
+            border: 1px solid #ecf0f1;
+            border-radius: 10px;
+            box-shadow: 0 6px 7px -4px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 20px -10px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Card Title */
+        .card-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #2c3e50;
+            transition: color 0.3s ease;
+        }
+
+        .card:hover .card-title {
+            color: #2980b9;
+        }
+
+        /* Card Content */
+        .card-content {
+            font-size: 20px;
+            font-weight: 700;
+            color: #f1106e;
+            transition: color 0.3s ease;
+        }
+
+        .card:hover .card-content {
+            color: #f8260e;
+        }
+
+        /* Table Styling */
+        .table-responsive {
+            margin-top: 30px;
+            overflow-x: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+/* Main Table Styling */
+.table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse; /* Collapse borders to achieve the desired look */
+    background-color: #ffffff;
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+/* Header Styling */
+.table th {
+    background-color: #4e4545; /* Set header background to black */
+    color: #ffffff; /* White text for the header */
+    font-weight: 300;
+    padding: 15px;
+    text-align: center; /* Center align text in header */
+    border-bottom: 2px solid #dee2e6;
+    font-size: 14px;
+}
+
+/* Cell Styling */
+.table td {
+    padding: 15px;
+    text-align: center; /* Center align content in cells */
+    white-space: nowrap;
+    border-bottom: 1px solid #dee2e6;
+    
+}
+
+/* Row Styling */
+.table tbody tr:nth-child(odd) {
+    background-color: #f1f1f1; /* Light grey for odd rows */
+}
+
+.table tbody tr:nth-child(even) {
+    background-color: #ffffff; /* White for even rows */
+}
+
+/* Remove right border from last column */
+.table th:last-child,
+.table td:last-child {
+    border-right: none;
+}
+
+/* Row hover effect */
+.table tbody tr:hover {
+    background-color: #e0e0e0; /* Slightly darker grey on hover */
+    transition: background-color 0.3s ease;
+}
+
+/* Make table rows more compact */
+.table-sm th,
+.table-sm td {
+    padding: 8px;
+}
+
+/* Custom Scrollbar for Table */
+.table-responsive::-webkit-scrollbar {
+    height: 6px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+    background-color: #adb5bd;
+    border-radius: 10px;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+    background-color: #e9ecef;
+    border-radius: 10px;
+}
+
+/* Sticky Header Shadow */
+.table th {
+    box-shadow: inset 0 -1px 0 #dee2e6, 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+
+        /* Main Title Styling */
+        .main-title {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            text-align: center;
+            color: #333;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            box-shadow: inset 0 0 5px #a5aaad;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: #4f35a1;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background-color: #a5aaad;
+        }
+
+        /* Legend Styles */
+        .legend-box {
+            display: inline-block;
+            width: 15px;
+            height: 15px;
+            margin-right: 10px;
+            border-radius: 3px;
+        }
+
+        .yellow {
+            background-color: yellow;
+        }
+
+        .light-coral {
+            background-color: lightcoral;
+        }
+
+        .red {
+            background-color: red;
+        }
+
+        .legend {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        /* Plot Container Styling */
+        /* Adjusting plot container for 4 charts in a row */
+        .plot-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between; /* Distributes space evenly between plots */
+            margin-top: 20px;
+        }
+
+        .plot-container img {
+            flex: 0 1 calc(23% - 10px); /* Slightly reduce the width to fit better */
+            margin-bottom: 50px;
+            max-height: 220px; /* Reduce the height of the charts */
+        }
+
+        /* Responsive Design */
+        @media screen and (max-width: 768px) {
+            .card {
+                flex: 0 1 48%;
+                margin: 10px 1%;
+            }
+
+            .plot-container img {
+                flex: 0 1 48%;
+            }
+        }
+
+        @media screen and (max-width: 576px) {
+            .header {
+                font-size: 22px;
+            }
+
+            .card {
+                flex: 0 1 100%;
+                padding: 15px;
+            }
+
+            .card-title {
+                font-size: 22px;
+            }
+
+            .card-content {
+                font-size: 36px;
+            }
+
+            .plot-container img {
+                flex: 0 1 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="main-title"> Account Payables Supplier Dashboard</h1>
+            <form action="/dashboard" method="post" id="supplier-form">
+                <select name="supplier" onchange="this.form.submit()" class="form-select">
+                    {% for supplier in suppliers %}
+                    <option value="{{ supplier }}" {% if supplier==selected_supplier %}selected{% endif %}>
+                        {{ supplier }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </form>
+        </div>
+
+        <div class="card-container">
+            {% for title, value in cards %}
+            <div class="card">
+                <div class="content">
+                    <h3 class="card-title">{{ title }}</h3>
+                    <p class="card-content">{{ value }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Plot Container for displaying all the charts -->
+        <div class="plot-container">
+            {% for plot in plots %}
+            <img src="data:image/png;base64,{{ plot }}" alt="Chart">
+            {% endfor %}
+        </div>
+
+        <!-- Move the highlight option dropdown here -->
+        <form action="/dashboard" method="post" id="highlight-form">
+            <input type="hidden" name="supplier" value="{{ selected_supplier }}">
+            <select name="highlight_option" class="form-select" style="margin-top: 20px;" onchange="submitHighlightForm()">
+                <option value="Show All" {% if highlight_option=='Show All' %}selected{% endif %}>Show All</option>
+                <option value="Cancelled" {% if highlight_option=='Cancelled' %}selected{% endif %}>Cancelled</option>
+                <option value="Paid Late" {% if highlight_option=='Paid Late' %}selected{% endif %}>Paid Late</option>
+                <option value="Received Late" {% if highlight_option=='Received Late' %}selected{% endif %}>Received Late</option>
+            </select>
+        </form>
+
+        <div class="table">
+            {{ supplier_data|safe }}
+        </div>
+
+        <div class="legend">
+            <div><span class="legend-box yellow"></span>Validation Status is 'Cancelled'</div>
+            <div><span class="legend-box light-coral"></span>Paid Late</div>
+            <div><span class="legend-box red"></span>Received Late</div>
+        </div>
+    </div>
+
+    <!-- Button for Anomaly Detection -->
+    <div class="text-center" style="margin-top: 20px;">
+        <a href="anomaly.html" class="btn btn-primary">Anomaly Detection</a>
+    </div>
+
+    <!-- Adding the AJAX script -->
+    <script>
+        function submitHighlightForm() {
+            var form = document.getElementById('highlight-form');
+            var formData = new FormData(form);
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/dashboard", true);
+
+            // Display loading indicator
+            document.body.style.cursor = "wait";  // Change cursor to indicate loading
+
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    document.open();
+                    document.write(xhr.responseText);
+                    document.close();
+                    document.body.style.cursor = "default";  // Reset cursor after loading
+                }
+            };
+
+            xhr.onerror = function () {
+                alert("An error occurred while submitting the form. Please try again.");
+                document.body.style.cursor = "default";  // Reset cursor on error
+            };
+
+            xhr.send(formData);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Forecast and Analysis Dashboard</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Lato', sans-serif;
+            background-color: #f4f6f9;
+            color: #333333;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            margin-top: 40px;
+            padding: 30px;
+            max-width: 1100px;
+            margin-left: auto;
+            margin-right: auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease-in-out;
+        }
+
+        .kpi-container {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 30px;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.kpi-card {
+    background-color: white; /* Set the background to white */
+    color: rgb(196, 41, 66); /* Set the font color to pink */
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    flex: 1;
+    min-width: 200px;
+    margin: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.kpi-card h2 {
+    font-size: 20px;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    color: rgb(221, 30, 62); /* Set the font color of the heading to pink */
+}
+
+.kpi-card p {
+    font-size: 30px;
+    font-weight: bold;
+    color: rgb(207, 40, 68); /* Set the font color of the paragraph to pink */
+}
+
+
+        .form-group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        .form-select {
+            width: 280px;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+            background-color: #ffffff;
+            transition: all 0.3s ease;
+            appearance: none;
+        }
+
+        .form-select:hover {
+            border-color: #3498db;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary {
+            padding: 10px 15px;
+            border-radius: 6px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            font-size: 14px;
+            letter-spacing: 0.8px;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .plot-container {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .table-container {
+            margin-top: 30px;
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 15px;
+            background-color: #f9f9f9;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f0f0f0;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .kpi-container {
+                flex-direction: column;
+            }
+
+            .form-select, .btn-primary {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Forecast and Analysis Dashboard</h1>
+        </div>
+
+        <div class="form-group">
+            <label for="forecast-period" class="form-label visually-hidden">Select Lease Period:</label>
+            <select id="forecast-period" class="form-select">
+                <option value="30">1 Month (30 Days)</option>
+                <option value="90">3 Months (90 Days)</option>
+                <option value="180">6 Months (180 Days)</option>
+                <option value="365">1 Year (365 Days)</option>
+            </select>
+            <button onclick="updatePlots('ar')" class="btn btn-primary">Generate AR Forecast</button>
+            <button onclick="updatePlots('ap')" class="btn btn-primary">Generate AP Forecast</button>
+        </div>
+
+        <div id="forecast-plot" class="plot-container"></div>
+        <div class="table-container">
+            <h3>Forecasted Values Table</h3>
+            <table id="forecast-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Forecasted Value</th>
+                        <th>Lower Bound</th>
+                        <th>Upper Bound</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Data will be populated here dynamically -->
+                </tbody>
+            </table>
+        </div>
+        <div id="yearly-cash-flow-plot" class="plot-container"></div>
+        <!-- KPI Summary Section -->
+        <div class="kpi-container" id="kpi-container">
+            <div class="kpi-card">
+                <h2>Total Inflow ($)</h2>
+                <p id="total-inflow">-</p>
+            </div>
+            <div class="kpi-card">
+                <h2>Total Outflow ($)</h2>
+                <p id="total-outflow">-</p>
+            </div>
+            <div class="kpi-card">
+                <h2>Net Cash Flow($)</h2>
+                <p id="net-cash-flow">-</p>
+            </div>
+            <div class="kpi-card">
+                <h2>Days with Surplus</h2>
+                <p id="days-surplus">-</p>
+            </div>
+            <div class="kpi-card">
+                <h2>Days with Deficit</h2>
+                <p id="days-deficit">-</p>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        async function updatePlots(type) {
+            const days = document.getElementById('forecast-period').value;
+            const response = await fetch(`/plots/${type}/${days}`);
+            const data = await response.json();
+
+            // Update the forecast plot with the new data
+            Plotly.newPlot('forecast-plot', JSON.parse(data.forecast_fig));
+
+            // Update the yearly cash flow plot for 2025 if available
+            if (data.yearly_cash_flow_fig) {
+                Plotly.newPlot('yearly-cash-flow-plot', JSON.parse(data.yearly_cash_flow_fig));
+            }
+
+            // Update the forecast table with the new data
+            const tableBody = document.getElementById('forecast-table').getElementsByTagName('tbody')[0];
+            tableBody.innerHTML = ''; // Clear existing data
+
+            data.forecast_table.forEach(row => {
+                const newRow = tableBody.insertRow();
+                newRow.innerHTML = `
+                    <td>${new Date(row.ds).toLocaleDateString()}</td>
+                    <td>${row.yhat.toFixed(2)}</td>
+                    <td>${row.yhat_lower.toFixed(2)}</td>
+                    <td>${row.yhat_upper.toFixed(2)}</td>
+                `;
+            });
+
+            // Update the KPI values
+            document.getElementById('total-inflow').textContent = data.kpis.total_inflow.toFixed(2);
+            document.getElementById('total-outflow').textContent = data.kpis.total_outflow.toFixed(2);
+            document.getElementById('net-cash-flow').textContent = data.kpis.net_cash_flow.toFixed(2);
+            document.getElementById('days-surplus').textContent = data.kpis.days_with_surplus;
+            document.getElementById('days-deficit').textContent = data.kpis.days_with_deficit;
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            // Initially load AR data with 1 month (30 days) by default
+            updatePlots('ar');
+        });
+    </script>
+</body>
+
+</html>

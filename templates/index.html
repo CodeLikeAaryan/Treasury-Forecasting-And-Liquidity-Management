@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" rel="stylesheet" />
+    <link rel="stylesheet" href="static/styles.css" />
+    <title>DataNex</title>
+</head>
+<body>
+    <nav>
+        <div class="nav__header">
+            <div class="nav__logo">
+                <a href="#" style="font-size: 30px;">DATA<span>NEX</span>.</a>
+            </div>
+            <div class="nav__menu__btn" id="menu-btn">
+                <span><i class="ri-menu-line"></i></span>
+            </div>
+        </div>
+        <ul class="nav__links" id="nav-links" style="font-size: 18px;">
+            <li><a href="#">Home</a></li>
+            <li><a href="#products">Products</a></li>
+            <li><a href="#insights">Insights</a></li>
+        </ul>
+    </nav>
+
+    <header class="header__container">
+        <div class="header__image">
+            <div class="header__image__card header__image__card-1">
+                <span><i class="ri-key-line"></i></span>
+                <a href="#products" onclick="scrollToSection('forecasting')">Forecasting</a>
+            </div>
+            <div class="header__image__card header__image__card-2">
+                <span><i class="ri-passport-line"></i></span>
+                <a href="#products" onclick="scrollToSection('payment-date-prediction')">Payment Date Prediction</a>
+            </div>
+            <div class="header__image__card header__image__card-3">
+                <span><i class="ri-guide-line"></i></span>
+                <a href="#products" onclick="scrollToSection('anomaly-detection')">Anomaly Detection</a>
+            </div>
+            <img src="static/assets/img.jpg" alt="header" class="round-image" />
+        </div>
+        <div class="header__content">
+            <h1><br />THE <span>FUTURE OF INNOVATION</span> IS READY FOR AUTOMATION</h1>
+            <p>
+                Step into a world where automation propels innovation, streamlining complex processes and enabling quicker, smarter decision-making. Harness the transformative power of automated systems to unlock new efficiencies and capabilities across various industries.
+            </p>
+        </div>
+    </header>
+
+    <!-- New Account Payables and Receivables Section -->
+    <section class="account-section full-page" id="account-section" style="padding: 60px; margin-top: 60px; background-color: #ffffff; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+        <div style="display: flex; width: 100%; max-width: 1200px; align-items: flex-start; justify-content: space-between;">
+            <!-- Left Text Content -->
+            <!-- <div style="flex: 1; padding-right: 30px;"> -->
+            <div style="flex: 1; padding: 20px; text-align: left;">
+
+                <h2 style="font-size: 2.5em; color: #333; margin-bottom: 10px;">ACCOUNT PAYABLES AND ACCOUNT RECEIVABLES</h2>
+                <p style="font-size: 1.2em; color: #666; margin-bottom: 20px;">
+                    <strong>Accounts Payables (AP):</strong> Efficiently manage outgoing payments to vendors and suppliers, ensuring timely transactions while optimizing cash flow.<br><br>
+                    <strong>Accounts Receivables (AR):</strong> Keep track of incoming payments from clients with precision, streamlining collection processes and improving financial health.
+                </p>
+            </div>
+            <!-- Right Image -->
+            <div style="flex: 1; display: flex; justify-content: center;">
+                <img src="static/assets/image3.jpg" alt="Accounts Payables and Receivables" style="max-width: 100%; height: auto; box-shadow: 0 4px 8px rgba(0,0,0,0.15); border-radius: 10px;">
+            </div>
+        </div>
+    </section>
+
+    <!-- testing -->
+    <!-- <section class="cards">
+        <article class="card card--1">
+         
+          <div class="card__img"></div>
+          <a href="#" class="card_link">
+             <div class="card__img--hover"></div>
+           </a>
+          <div class="card__info">
+            <span class="card__category"> Recipe</span>
+            <h3 class="card__title">Crisp Spanish tortilla Matzo brei</h3>
+            <span class="card__by">by <a href="#" class="card__author" title="author">Celeste Mills</a></span>
+          </div>
+        </article>
+        
+    </section> -->
+    <!-- <div class="header">
+        <div class="header-title">Card Hover Blur Effect</div>
+    </div>
+    <div class="container">
+
+
+        <div class="card card-1">
+            <div class="card-content">
+                <div class="title">Temple</div>
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+            </div>
+        </div>
+
+        
+    </div> -->
+<!-- 
+    <div class="content">
+        <div class="grid">
+            <figure class="effect-julia">
+                <img src='assets/date.jpg'alt="img21"/>
+                <figcaption>
+                    <h2>Passionate <span>Julia</span></h2>
+                    <div>
+                        <p>Julia dances in the deep dark</p>
+
+                    </div>
+                    <a href="#">View more</a>
+                </figcaption>            
+            </figure>
+        
+        </div>
+     -->
+        
+<!--         
+    </div> -->
+    <!-- Products Section -->
+    <section class="products full-page" id="products" style="padding: 40px; background-color: #f4f4f9; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+        <h2 class="products-heading" style="text-align: center; font-size: 2em; color: #333;">Our Products</h2>
+        <div class="product-cards" style="display: flex; justify-content: space-around; align-items: center;">
+            <div class='product-card' id='payment-date-prediction' style='flex: 1 1 30%; height:200px; margin: 10px; padding: 30px; background-image: url("{{ url_for('static', filename='assets/date.jpg') }}"); background-size: cover; background-position: center; color: #ffffff; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); cursor: pointer; position: relative; overflow: hidden; transition: transform 0.3s ease;' onclick='window.location.href="{{ url_for('upload_and_predict') }}";'>
+                <div class='cardbackground' style='padding: 10px; background: rgba(0, 0, 0, 0.6);height:140px; display: flex; align-items: center; justify-content: center;'>
+                    <h1 style="font-size: 1.8em;">Payment Receipt Date Prediction</h1>
+                    <!-- <p>Predict payment dates with high accuracy.</p> -->
+                </div>
+            </div>
+            
+            <div class='product-card' id='forecasting' style='flex: 1 1 30%; margin: 10px; padding: 30px; background-image: url("static/assets/forecasting.jpg"); background-size: cover; background-position: center; color: #ffffff; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); cursor: pointer; transition: transform 0.3s ease;' onclick='window.location.href="{{ url_for('forecast') }}";'>
+                <div class='cardbackground' style="padding: 20px; background: rgba(0, 0, 0, 0.6); height:140px; display: flex; align-items: center; justify-content: center;">
+                    <h1 style="font-size: 1.8em;"> Time Series Forecasting</h1>
+                    <!-- <p>Get accurate forecasts for your business needs.</p> -->
+                </div>
+            </div>
+
+            <div class='product-card' id='anomaly-detection' style='flex: 1 1 30%; margin: 10px; padding: 30px; background-image: url("static/assets/anomaly.jpg"); background-size: cover; background-position: center; color: #ffffff; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); cursor: pointer; transition: transform 0.3s ease;' onclick='window.location.href="{{ url_for('dashboard') }}";'>
+                <div class='cardbackground' style="padding: 20px; background: rgba(0, 0, 0, 0.6); height:140px; display: flex; align-items: center; justify-content: center;">
+                    <h1 style="font-size: 1.8em;">Payables Analysis And Anomaly Detection</h1>
+                    <!-- <p>Detect anomalies in your data with precision.</p> -->
+                </div>
+            </div>
+            
+        </div>
+        <div class="up-arrow" onclick="scrollToTop()" style="position: fixed; bottom: 20px; right: 30px; cursor: pointer; color: #0056b3;">
+            <i class="ri-arrow-up-line" style="font-size: 2em;"></i>
+        </div>
+    </section>
+
+    
+
+    <section class="insights full-page" id="insights" style="padding: 40px; background-color: #f4f4f9; display: flex; align-items: center; justify-content: center;">
+        <div style="display: flex; width: 100%; max-width: 1200px; align-items: flex-start; justify-content: space-between; padding: 20px;">
+            <div style="flex: 1; padding: 20px; text-align: left;">
+                <h2 style="font-size: 2.5em; color: #333; margin-bottom: 10px;">Account Payables Insights</h2>
+                <p style="font-size: 1.2em; color: #666; margin-bottom: 20px;">This report provides a comprehensive analysis of accounts payable data, focusing on payment trends, vendor relationships, and financial efficiencies. It offers insights into payment timings, adherence to terms, and highlights areas for improving cash flow management. By leveraging detailed analytics, this report aids in optimizing payment strategies and enhancing vendor satisfaction.</p>
+                <!-- <button onclick='window.location.href="insights.html";' style="padding: 10px 20px; background-color: #0056b3; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 1em; transition: background-color 0.3s ease; text-align: left;">Explore Now <span>→</span></button> -->
+            </div>
+            <div style="flex: 1; display: flex; justify-content: flex-start;">
+                <img src="static/assets/img2.jpg" alt="Insights" style="max-width: 100%; height: auto; box-shadow: 0 4px 8px rgba(0,0,0,0.15);">
+            </div>
+        </div>
+    </section>
+
+    <script src="https://unpkg.com/scrollreveal"></script>
+    <script src="static/main.js"></script>
+</body>
+</html>

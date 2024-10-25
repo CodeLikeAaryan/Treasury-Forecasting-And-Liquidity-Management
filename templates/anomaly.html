@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anomaly Detection Dashboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <style>
+        /* General Body Styling */
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .container {
+            margin-top: 40px;
+            max-width: 1100px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.05);
+            padding: 30px;
+        }
+        h1 {
+            margin-bottom: 20px;
+            color: #212529;
+            font-weight: 600;
+            text-align: center;
+            font-size: 1.8rem;
+        }
+        label {
+            font-weight: 500;
+            color: #495057;
+        }
+        /* KPI Card Styling */
+        .kpi-card {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            margin-bottom: 20px;
+            color: #e91e63;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+        .kpi-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.15);
+        }
+        .kpi-card h5 {
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: #e91e63;
+        }
+        .kpi-card p {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #e91e63;
+        }
+        /* Chart Container Styling */
+        .plot-container {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease-in-out;
+        }
+        .plot-container:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        h4 {
+            margin-bottom: 15px;
+            font-weight: 600;
+            color: #212529;
+            font-size: 1.2rem;
+        }
+        /* Table Styling */
+        .table-container {
+            margin-top: 30px;
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #ffffff;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+        th {
+            background-color: #343a40;
+            color: white;
+            font-weight: 500;
+        }
+        /* Scrollable Table */
+        tbody {
+            display: block;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        table thead, table tbody tr {
+            display: table;
+            width: 100%;
+            table-layout: fixed;
+        }
+        /* Anomalous Row Styling */
+        .anomalous-row {
+            background-color: #f8d7da !important;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Anomaly Detection in Treasury Forecasting</h1>
+
+        <!-- Plot Containers: Static charts -->
+        <div class="row">
+            <div class="col-md-6 plot-container">
+                <h4>Isolation Forest Anomaly Detection</h4>
+                <div id="isolation_forest"></div>
+            </div>
+            <div class="col-md-6 plot-container">
+                <h4>Geographical Distribution of Anomalies</h4>
+                <div id="geographical_anomalies"></div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 plot-container">
+                <h4>Anomalies by Type</h4>
+                <div id="anomalies_by_type"></div>
+            </div>
+            <div class="col-md-6 plot-container">
+                <h4>Anomalies Distribution by Country (Top 5)</h4>
+                <div id="anomalies_distribution_country"></div>
+            </div>
+        </div>
+                <!-- Customer Dropdown -->
+                <div class="form-group">
+                    <label for="customer-select">Select Customer:</label>
+                    <select class="form-control" id="customer-select">
+                        {% for customer in customers %}
+                            <option value="{{ customer }}">{{ customer }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+        
+                <!-- KPI Section -->
+                <div class="row" id="kpis" style="margin-top: 20px;">
+                    <!-- KPI cards will be dynamically inserted here -->
+                </div>
+        
+                <!-- Table Section -->
+                <div class="table-container" id="table-container">
+                    <h4>Transaction Details</h4>
+                    <table id="transaction-table" class="table">
+                        <thead>
+                            <tr>
+                                <th>Invoice ID</th>
+                                <th>Invoice Date</th>
+                                <th>Due Date</th>
+                                <th>Invoice Amount</th>
+                                <th>Country</th>
+                                <th>Customer Name</th>
+                                <th>Payment Date</th>
+                                <th>Payment Amount</th>
+                                <th>Days Past Due</th>
+                                <th>Payment Difference</th>
+                                <th>Anomaly Type</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Table rows will be dynamically inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            // Detect anomalies based on selected customer
+            $('#customer-select').change(function() {
+                const selectedCustomer = $(this).val();
+                $.ajax({
+                    url: "/detect_anomalies",
+                    method: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify({ customer: selectedCustomer }),
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            // Update KPI cards dynamically
+                            $('#kpis').empty();
+                            let kpiKeys = ['total_amount_transacted', 'total_anomalies', 'average_amount_transacted', 'average_risk_score', 'average_days_past_due', 'anomaly_rate_percent'];
+                            kpiKeys.forEach(function(key) {
+                                $("#kpis").append(`
+                                    <div class="col-md-4">
+                                        <div class="kpi-card">
+                                            <h5>${key.replace(/_/g, ' ')}</h5>
+                                            <p>${response.kpis[key]}</p>
+                                        </div>
+                                    </div>`);
+                            });
+
+                            // Always show the table with anomalies
+                            $('#table-container').show();
+                            const tableBody = $('#transaction-table tbody');
+                            tableBody.empty();
+                            response.table_data.forEach(function(row) { // Show all anomaly rows
+                                const rowClass = 'anomalous-row';
+                                const tableRow = `
+                                    <tr class="${rowClass}">
+                                        <td>${row.invoice_id}</td>
+                                        <td>${row.invoice_date}</td>
+                                        <td>${row.due_date}</td>
+                                        <td>${row.invoice_amount}</td>
+                                        <td>${row.Country}</td>
+                                        <td>${row['Customer Name']}</td>
+                                        <td>${row.payment_date}</td>
+                                        <td>${row.payment_amount}</td>
+                                        <td>${row.days_past_due}</td>
+                                        <td>${row.payment_difference}</td>
+                                        <td>${row.anomaly_type}</td>
+                                    </tr>`;
+                                tableBody.append(tableRow);
+                            });
+                        } else {
+                            alert("Error: " + response.message);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        alert("An error occurred: " + error);
+                    }
+                });
+            });
+
+            // Initial load with the default customer ('Overall')
+            $('#customer-select').trigger('change');
+
+            // Render static plots using Plotly on initial load
+            function renderStaticPlots() {
+                $.ajax({
+                    url: "/detect_anomalies",
+                    method: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify({ customer: "Overall" }),
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            const layoutConfig = {
+                                paper_bgcolor: 'rgba(0,0,0,0)',
+                                plot_bgcolor: 'rgba(0,0,0,0)',
+                                margin: { t: 30, b: 60 },
+                                xaxis: {
+                                    tickfont: { size: 9, color: '#333' },
+                                    tickangle: -30
+                                },
+                                yaxis: { tickfont: { size: 10, color: '#333' }
+                                }
+                            };
+                            const plotConfig = { responsive: true, displayModeBar: false };
+
+                            // Render the static charts
+                            Plotly.newPlot('isolation_forest', JSON.parse(response.plots.isolation_forest), layoutConfig, plotConfig);
+                            Plotly.newPlot('geographical_anomalies', JSON.parse(response.plots.geographical_anomalies), layoutConfig, plotConfig);
+                            Plotly.newPlot('anomalies_by_type', JSON.parse(response.plots.anomalies_by_type), layoutConfig, plotConfig);
+                            Plotly.newPlot('anomalies_distribution_country', JSON.parse(response.plots.anomalies_distribution_country), layoutConfig, plotConfig);
+                        } else {
+                            alert("Error: " + response.message);
+                        }
+                    }
+                });
+            }
+
+            // Call function to render static plots on initial load
+            renderStaticPlots();
+        });
+    </script>
+</body>
+</html>
